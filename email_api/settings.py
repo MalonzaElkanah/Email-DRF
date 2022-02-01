@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_autodocs',
+    'email_setting.apps.EmailSettingConfig',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +72,23 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    # 'DEFAULT_PAGINATION_CLASS': 'mylib.my_common.MyStandardPagination',
+    # 'PAGE_SIZE': 100,
+    # 'DATETIME_FORMAT':"%a, %d %b %y %I:%M %p",
+    # 'DATE_FORMAT':"%a, %d %b %Y"
+
+}
+CORS_ORIGIN_ALLOW_ALL=True
 
 WSGI_APPLICATION = 'email_api.wsgi.application'
 
@@ -105,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 

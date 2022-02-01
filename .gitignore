@@ -1,0 +1,11 @@
+*.pyc
+.idea/
+build/
+db.sqlite3
+./media
+./static
+.env
+venv/
+.vscode
+
+virtual/
