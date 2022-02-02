@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from drf_autodocs.views import TreeView
+
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('settings/', views.EmailSettingListCreateAPIView.as_view(), name='email-settings'),
     path('settings/<int:pk>/', views.EmailSettingUpdateAPIView.as_view(), name='email-settings'),
+    path('inbox/<int:pk>/', views.inbox_apiview, name='email-inbox'),
+    path('', TreeView.as_view(), name='api-tree'),
 ]

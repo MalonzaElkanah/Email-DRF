@@ -69,6 +69,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries' : {
+                'staticfiles': 'django.templatetags.static',
+            }
         },
     },
 ]
@@ -82,6 +85,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
     # 'DEFAULT_PAGINATION_CLASS': 'mylib.my_common.MyStandardPagination',
     # 'PAGE_SIZE': 100,
     # 'DATETIME_FORMAT':"%a, %d %b %y %I:%M %p",
@@ -93,6 +98,7 @@ CORS_ORIGIN_ALLOW_ALL=True
 WSGI_APPLICATION = 'email_api.wsgi.application'
 
 
+AUTH_USER_MODEL = 'email_setting.EmailSetting'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
