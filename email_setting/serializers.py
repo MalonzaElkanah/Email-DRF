@@ -7,5 +7,5 @@ class EmailSettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EmailSetting
-        fields = [ "email", "password", "name", "smtp_server", "smtp_port", "imap_server", "imap_port"]
+        fields = '__all__' # [ "email", "password", "name", "smtp_server", "smtp_port", "imap_server", "imap_port"]
         

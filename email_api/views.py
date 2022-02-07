@@ -20,7 +20,15 @@ class EmailSettingUpdateAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 @api_view(['GET'])
 def test_settings(request, pk):
-    pass 
+    settings = EmailSetting.objects.filter(id=pk)
+    if settings.count() > 0:
+        connection = mail_lib.check_connection(settings[0]) 
+        if connection:
+            return Response({'results': {'connection': 'success'}}, status=status.HTTP_200_OK)
+        else:
+            return Response({'results': {'connection': connection,}}, status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
@@ -29,23 +37,23 @@ def inbox_apiview(request, pk):
     if settings.count() > 0:
         subjects = mail_lib.get_email_subjects("INBOX", 1, settings[0])
         mail_labels = mail_lib.email_labels(settings[0])
-
-        items = {
-            'results': 
-                {
-                    'emails': subjects, 
-                    'labels': mail_labels
-                }
-        }
-
+        items = {'results':{'emails': subjects, 'labels': mail_labels}}
         return Response(items, status=status.HTTP_200_OK)
     else:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
-def label_mails(request, pk):
-        pass
+def label_mails(request, label, pk):
+    settings = EmailSetting.objects.filter(id=pk)
+    if settings.count() > 0:
+        label = '"'+label.replace('-', ' ').title()+'"'
+        subjects = mail_lib.get_email_subjects(label, 1, settings[0])
+        mail_labels = mail_lib.email_labels(settings[0])
+        items = {'results':{'emails': subjects, 'labels': mail_labels}}
+        return Response(items, status=status.HTTP_200_OK)
+    else:
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])

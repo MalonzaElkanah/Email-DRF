@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('settings/', views.EmailSettingListCreateAPIView.as_view(), name='email-settings'),
     path('settings/<int:pk>/', views.EmailSettingUpdateAPIView.as_view(), name='email-settings'),
+    path('settings/test/<int:pk>/', views.test_settings, name='test-settings'),
     path('inbox/<int:pk>/', views.inbox_apiview, name='email-inbox'),
     path('', TreeView.as_view(), name='api-tree'),
 ]
