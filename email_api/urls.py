@@ -21,10 +21,15 @@ from drf_autodocs.views import TreeView
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('settings/', views.EmailSettingListCreateAPIView.as_view(), name='email-settings'),
-    path('settings/<int:pk>/', views.EmailSettingUpdateAPIView.as_view(), name='email-settings'),
-    path('settings/test/<int:pk>/', views.test_settings, name='test-settings'),
-    path('inbox/<int:pk>/', views.inbox_apiview, name='email-inbox'),
+    path('emails/', views.EmailSettingListCreateAPIView.as_view(), name='emails'),
+    path('emails/<int:pk>/', views.EmailSettingUpdateAPIView.as_view(), name='email'),
+    path('emails/<int:pk>/test/', views.test_settings, name='email-test'),
+    path('emails/<int:pk>/inbox/', views.inbox_apiview, name='email-inbox'),
+    path('emails/<int:pk>/compose/', views.ComposeEmailAPIView.as_view(), name = 'email-compose'),
+    path('emails/<int:pk>/label/<slug:label>/', views.label_mails, name = 'email-labels'),    
+    path('emails/<int:pk>/label/<slug:label>/<int:email_id>/', views.read_email, name = 'email-view'),
+    path('emails/<int:pk>/label/<slug:label>/<int:email_id>/attachment/<int:attachment_id>/', 
+        views.get_attachment, name = 'attachment-file'),
+
     path('', TreeView.as_view(), name='api-tree'),
 ]

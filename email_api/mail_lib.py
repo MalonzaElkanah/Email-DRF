@@ -1,3 +1,5 @@
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 # SMTP IMPORTS
 from validate_email import validate_email
@@ -253,6 +255,8 @@ def get_email(uid, category, app_email):
 								if filename:
 									folder_name = clean(subject)
 									base = 'email-attachments'
+									if not os.path.isdir(base):
+										os.mkdir(base)
 									folder_name = os.path.join(base, folder_name)
 									if not os.path.isdir(folder_name):
 										# make a folder for this email (named after the subject)
@@ -293,9 +297,11 @@ def get_email(uid, category, app_email):
 def send_email(email_data, app_email):
 	# Send TEXT Mime Email
 	subject = email_data['subject']
-	email = email_data['email_address']
+	email = email_data['email']
 	email_body = email_data['content']
-	attachments = email_data['attachments']
+	attachments = email_data.get('attachments', [])
+	print(attachments)
+	print(email_data)
 
 	smtp_server = app_email.smtp_server
 	port = app_email.smtp_port  # For starttls
@@ -318,36 +324,26 @@ def send_email(email_data, app_email):
 	message.attach(part2)
 
 	if attachments != []:
-		for attachment in attachments:
+		if isinstance(attachments, list):
+			for attachment in attachments:
+				part = MIMEBase("application", "octet-stream")
+				part.set_payload(attachment.read())
+				encoders.encode_base64(part)
+				part.add_header(
+					"Content-Disposition",
+					f"attachment; filename= {attachment}",
+				)
+				message.attach(part)
+		else:
 			part = MIMEBase("application", "octet-stream")
-			part.set_payload(attachment.read())
+			part.set_payload(attachments.read())
 			encoders.encode_base64(part)
 			part.add_header(
 				"Content-Disposition",
-				f"attachment; filename= {attachment}",
+				f"attachment; filename= {attachments}",
 			)
 			message.attach(part)
 
-	'''
-	filename = "document.pdf"  # In same directory as script
-	# Open PDF file in binary mode
-	with open(filename, "rb") as attachment:
-		# Add file as application/octet-stream
-		# Email client can usually download this automatically as attachment
-		part = MIMEBase("application", "octet-stream")
-		part.set_payload(attachment.read())
-
-	# Encode file in ASCII characters to send by email    
-	encoders.encode_base64(part)
-
-	# Add header as key/value pair to attachment part
-	part.add_header(
-		"Content-Disposition",
-		f"attachment; filename= {filename}",
-	)'''
-
-	
-	# message.attach(part)
 
 	# Create a secure SSL context
 	context = ssl.create_default_context()
@@ -364,10 +360,10 @@ def send_email(email_data, app_email):
 	except Exception as e:
 		# Print any error messages to stdout
 		print(e)
-		return False
+		return {'errors': e}
 	finally:
 		server.quit()
-	return True
+	return email_data
 	
 
 
